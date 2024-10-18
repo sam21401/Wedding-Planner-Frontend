@@ -1,0 +1,18 @@
+networks:
+  traefik-network:
+    external: true
+ 
+services:
+  node:
+    image: node:22.10.0-alpine3.20
+    volumes:
+      - .:/app
+    networks: 
+      - traefik-network
+    working_dir: "/app"
+    tty: true
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.frontend-router.rule=Host(`weddingplanner.localhost`)"
+      - "traefik.http.services.frontend.loadbalancer.server.port=7777" 
+      

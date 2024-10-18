@@ -1,0 +1,11 @@
+{
+    "name": "frontend",
+    "description": "description",
+    "authors": "author",
+    "version": "1.0.0",
+    "main": "./src/main.js",
+    "scripts": {
+        "dev": "npm -v"
+    },
+    "dependencies": {}
+}
