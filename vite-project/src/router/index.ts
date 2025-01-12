@@ -2,9 +2,12 @@
 
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 
-// Definicja tras z typami RouteRecordRaw
 const routes: Array<RouteRecordRaw> = [
-  { path: '/', name: 'Home', component: () => import('../views/Home.vue') },
+  // Usuń referencję do Home.vue
+  // Strona główna będzie obsługiwana przez App.vue
+  { path: '/', name: 'Home', component: null },
+
+  // Podstrony
   { path: '/o-nas', name: 'About', component: () => import('../views/About.vue') },
   { path: '/faq', name: 'FAQ', component: () => import('../views/FAQ.vue') },
   { path: '/kontakt', name: 'Contact', component: () => import('../views/Contact.vue') },
@@ -13,7 +16,7 @@ const routes: Array<RouteRecordRaw> = [
   { path: '/o-aplikacji/planer-noclegow', name: 'AccommodationPlanner', component: () => import('../views/AccommodationPlanner.vue') },
   { path: '/o-aplikacji/organizer-zadan', name: 'TaskOrganizer', component: () => import('../views/TaskOrganizer.vue') },
   { path: '/o-aplikacji/statystyki', name: 'Statistics', component: () => import('../views/Statistics.vue') },
-  
+
   // Trasa 404 (przechwytuje wszystkie nieznane ścieżki)
   { path: '/:pathMatch(.*)*', name: 'NotFound', component: () => import('../views/NotFound.vue') },
 ];

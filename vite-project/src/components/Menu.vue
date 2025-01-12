@@ -37,7 +37,7 @@
                   aria-haspopup="true"
                   aria-expanded="false"
                 >
-                  O aplikacji <span class="caret"></span>
+                  Aplikacja <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu">
                   <li><router-link class="dropdown-item" to="/o-aplikacji/lista-gosci">Lista gości</router-link></li>

@@ -2,7 +2,7 @@
 <template>
   <div id="app">
     <!-- Elementy wspólne, widoczne na każdej stronie -->
-    <Header />
+    <Menu />
     <Options />
 
     <!-- SliderSection widoczny tylko na stronie głównej -->
@@ -24,7 +24,7 @@ import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 
 // Import komponentów wspólnych
-import Header from './components/Header.vue'
+import Menu from './components/Menu.vue'
 import Options from './components/Options.vue'
 import SliderSection from './components/SliderSection.vue'
 import NewArrival from './components/NewArrival.vue'
