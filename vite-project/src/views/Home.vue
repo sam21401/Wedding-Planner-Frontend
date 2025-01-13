@@ -1,6 +1,4 @@
 <template>
-  <div class="home">
-
 </template>
 
 <script setup lang="ts">
