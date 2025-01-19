@@ -9,11 +9,16 @@ const routes: Array<RouteRecordRaw> = [
   { path: '/o-aplikacji/planer-stolow', name: 'TablePlanner', component: () => import('../views/TablePlanner.vue') },
   { path: '/o-aplikacji/planer-noclegow', name: 'AccommodationPlanner', component: () => import('../views/AccommodationPlanner.vue') },
   { path: '/o-aplikacji/organizer-zadan', name: 'TaskOrganizer', component: () => import('../views/TaskOrganizer.vue') },
-  { path: '/o-aplikacji/statystyki', name: 'Statistics', component: () => import('../views/Statistics.vue') },
   { path: '/wedding-landing-page', name: 'WeddingLandingPage', component: () => import('../views/WeddingLandingPage.vue') },
-  { path: '/wedding-page-view', name: 'WeddingPageView', component: () => import('../views/WeddingPageView.vue') }, // Poprawiona ścieżka
-  { path: '/:pathMatch(.*)*', name: 'NotFound', component: () => import('../views/NotFound.vue') } // Strona 404
+  { path: '/:pathMatch(.*)*', name: 'NotFound', component: () => import('../views/NotFound.vue') }, // Strona 404
+  { path: '/goscie', name: 'Guests', component: () => import('../views/Guests.vue'),meta: { requiresAuth: true }},
+  { path: '/rejestracja' , name: 'Register', component: () => import('../components/Register.vue')},
+  { path: '/logowanie', name: 'Login', component: () => import('../components/Login.vue')},
+  { path: '/logowanie/google', name: 'Google', component: () => import('../components/LoginGoogle.vue')},
+  { path: '/logowanie/facebook', name: 'Facebook', component: () => import('../components/LoginGoogle.vue')},
+  { path: '/sprawdzenie/google', name: 'GoogleCheck', component: () => import ('../components/CheckGoogle.vue')},
 ];
+
 
 const router = createRouter({
   history: createWebHistory(),

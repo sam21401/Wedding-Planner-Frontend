@@ -10,7 +10,6 @@
             <div class="hero-text">
               <h1>Twój niezawodny pomocnik w planowaniu idealnego wesela</h1>
               <p>Zaplanuj własne wesele od A do Z!</p>
-              <a href="/register" class="btn btn-primary">Załóż konto</a>
             </div>
           </div>
   
@@ -19,7 +18,7 @@
             <!-- Obraz z assets/images/ -->
             <!-- Jeśli plik jest w src/assets/images/ -->
             <img
-              src="../assets/images/wedding-dress-1486260_128d0.png"
+              src="../assets/images/wedding-dress-1486260_1280.png"
               class="img-fluid"
               alt="Suknia ślubna, ilustracja panny młodej"
             />
