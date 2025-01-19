@@ -3,8 +3,8 @@
 module.exports = {
   title: 'Planer Ślubu - Dokumentacja',
   tagline: 'Twoje wsparcie w organizacji idealnego wesela',
-  url: 'https://twoja-domena.com', // Zmień na swoją domenę
-  baseUrl: '/',
+  url: 'https://sam21401.github.io',
+  baseUrl: '/Wedding-Planner-Frontend/my-docs/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
