@@ -19,7 +19,7 @@
             <!-- Obraz z assets/images/ -->
             <!-- Jeśli plik jest w src/assets/images/ -->
             <img
-              src="../assets/images/wedding-dress-1486260_1280.png"
+              src="../assets/images/wedding-dress-1486260_128d0.png"
               class="img-fluid"
               alt="Suknia ślubna, ilustracja panny młodej"
             />
