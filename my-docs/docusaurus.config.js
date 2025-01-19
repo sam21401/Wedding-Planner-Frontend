@@ -3,7 +3,7 @@
 module.exports = {
   title: 'Planer Ślubu - Dokumentacja',
   tagline: 'Twoje wsparcie w organizacji idealnego wesela',
-  url: 'https://sam21401.github.io',
+  url: 'https://github.com/pawelzeb/wedding-planner-frontend.git',
   baseUrl: '/Wedding-Planner-Frontend/my-docs/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
