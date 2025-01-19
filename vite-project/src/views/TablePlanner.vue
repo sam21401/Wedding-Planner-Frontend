@@ -1,13 +1,7 @@
 <template>
     <section class="table-planner-section">
       <div class="container">
-        <!-- Symulacja logowania/wylogowania -->
-        <div class="auth-simulation">
-          <button @click="toggleLogin" class="btn btn-toggle">
-            <i :class="isLoggedIn ? 'fas fa-sign-out-alt' : 'fas fa-sign-in-alt'"></i>
-            {{ isLoggedIn ? " Wyloguj się" : " Zaloguj się" }}
-          </button>
-        </div>
+
   
         <!-- Widok dla zalogowanych użytkowników z animacją -->
         <transition name="fade">
@@ -119,14 +113,6 @@
               class="img-fluid"
               alt="Przykład planera stołów"
             />
-            <div class="button-group">
-              <router-link to="/register" class="btn btn-primary">
-                <i class="fas fa-user-plus"></i> Zarejestruj się
-              </router-link>
-              <router-link to="/login" class="btn btn-secondary">
-                <i class="fas fa-sign-in-alt"></i> Zaloguj się
-              </router-link>
-            </div>
           </div>
         </transition>
       </div>

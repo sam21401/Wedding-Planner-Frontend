@@ -1,8 +1,18 @@
 <template>
   <section class="guest-list-section">
     <div class="container">
+      <!-- Symulacja logowania/wylogowania -->
+      <div class="auth-simulation">
+        <button @click="toggleLogin" class="btn btn-toggle">
+          <i :class="isLoggedIn ? 'fas fa-sign-out-alt' : 'fas fa-sign-in-alt'"></i>
+          {{ isLoggedIn ? " Wyloguj się" : " Zaloguj się" }}
+        </button>
+      </div>
+
+      <!-- Widok z animacją przejścia -->
       <transition name="fade">
         <div v-if="isLoggedIn" class="logged-in-view">
+          <!-- Nagłówek i wyszukiwarka -->
           <div class="header-section">
             <h1>Lista Gości</h1>
             <input
@@ -12,6 +22,8 @@
               class="search-bar"
             />
           </div>
+
+          <!-- Statystyki gości -->
           <div class="stats-section">
             <div class="stat-card" v-for="stat in stats" :key="stat.id">
               <i :class="stat.icon" class="stat-icon"></i>
@@ -22,6 +34,7 @@
             </div>
           </div>
 
+          <!-- Tabela z listą gości -->
           <table class="guest-table">
             <thead>
               <tr>
@@ -120,62 +133,27 @@
   </section>
 </template>
 
-
-
 <script setup lang="ts">
 import { ref, computed } from "vue";
-import { reactive } from "@vue/runtime-dom";
-import apiClient from "../services/api.js";
-import router from "@/router";
-import {AxiosError} from "axios";
-import Guest from "@/components/Guest.vue";
 
-const isLoggedIn = computed(() => localStorage.getItem("auth_token") !== null);
+// Symulacja logowania/wylogowania
+const isLoggedIn = ref(false); // Domyślnie niezalogowany
 
-interface GuestForm {
-  name: string;
-  surname: string;
-
-  email: string;
-  phone: string;
+function toggleLogin() {
+  isLoggedIn.value = !isLoggedIn.value;
 }
 
-
-const form = reactive<GuestForm>({
-  email: "",
-  name: "",
-  surname: "",
-  phone: "",
-});
-
-const errors = reactive({
-  email: [],
-  password: [],
-  surname: [],
-  phone: [],
-});
-
-
-const guestAdd = async (form: GuestForm) => {
-  try {
-    const response = await apiClient.post('guests', form);
-
-    if (response.data.token) {
-      const token = response.data.token;
-      apiClient.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-      localStorage.setItem('auth_token', token);
-      router.push({ name: 'WeddingLandingPage' });
-    } else {
-      errors.email = ['Niepoprawny email lub hasło'];
-      errors.password = [''];
-    }
-  } catch (e) {
-    if (e instanceof AxiosError) {
-      errors.email = ['Wystąpił błąd przy logowaniu. Spróbuj ponownie.'];
-      errors.password = [''];
-    }
-  }
-};
+// Dane gości
+interface Guest {
+  id: number;
+  name: string;
+  wedding: boolean;
+  afterParty: boolean;
+  accommodation: boolean;
+  lastLogin: string;
+  menu: string;
+  active: boolean;
+}
 
 const guests = ref<Guest[]>([
   {
@@ -220,6 +198,7 @@ const guests = ref<Guest[]>([
   },
 ]);
 
+// Wyszukiwanie gości
 const searchQuery = ref("");
 const filteredGuests = computed(() =>
   guests.value.filter((guest) =>
@@ -227,6 +206,7 @@ const filteredGuests = computed(() =>
   )
 );
 
+// Statystyki gości
 const confirmedGuests = computed(() =>
   guests.value.filter(
     (guest) => guest.wedding || guest.afterParty || guest.accommodation

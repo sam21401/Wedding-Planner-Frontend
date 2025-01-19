@@ -1,196 +1,295 @@
+<script setup lang="ts">
+import { ref, computed, onMounted } from "vue";
+import axios from "../services/api.js";
+import { useRouter } from "vue-router";
+
+// Router
+const router = useRouter();
+const isLoggedIn = computed(() => localStorage.getItem("auth_token") !== null);
+const token = localStorage.getItem("auth_token");
+if (!token) {
+  console.error("Brak tokenu w LocalStorage!");
+}
+const successMessage = ref("");
+const errorMessage = ref("");
+const posts = ref([]);
+const singlePost = ref({
+  title: "",
+  description: "",
+  wedding_date: "",
+  venue_name: "",
+  venue_address: "",
+  theme: "",
+  dress_code: "",
+  estimated_cost: 0,
+  latitude: null,
+  longitude: null,
+  rsvp_deadline: "",
+  transportation_notes: "",
+  gifts: "",
+  music_type: "",
+  host: "",
+  with_children: true,
+});
+
+async function fetchPosts() {
+  try {
+    const response = await axios.get("/posts");
+    posts.value = response.data;
+  } catch (error) {
+    console.error("Nie udało się pobrać postów:", error);
+  }
+}
+
+const showSuccessMessage = (message) => {
+  successMessage.value = message;
+  setTimeout(() => (successMessage.value = ""), 3000);
+};
+
+async function createPost() {
+  try {
+    await axios.post("/posts", singlePost.value);
+    fetchPosts();
+    showSuccessMessage("Wesele zostało dodane pomyślnie.");
+  } catch (error) {
+    if (error.response?.data?.errors) {
+      errors.value = error.response.data.errors;
+    }
+    console.error("Błąd przy tworzeniu posta:", error);
+  }
+}
+
+async function editPost(post) {
+  singlePost.value = { ...post };
+}
+
+async function updatePost(id) {
+  try {
+    const updatedPost = { ...singlePost.value };
+    await axios.put(`/posts/${id}`, updatedPost);
+    fetchPosts();
+    showSuccessMessage("Wesele zostało zaaktualizowane pomyślnie.");
+  } catch (error) {
+    console.error("Błąd przy aktualizacji:", error);
+  }
+}
+
+async function deletePost(id: number) {
+  try {
+    await axios.delete(`/posts/${id}`);
+    fetchPosts();
+    showSuccessMessage("Wesele zostało usunięte pomyślnie.");
+  } catch (error) {
+    console.error("Błąd przy usuwaniu posta:", error);
+  }
+}
+
+onMounted(() => {
+  fetchPosts();
+});
+
+const errors = ref([]);
+</script>
+
 <template>
-    <section class="wedding-landing-page">
-      <div class="container">
-        <!-- Symulacja logowania/wylogowania -->
-        <div class="auth-simulation">
-          <button @click="toggleLogin" class="btn btn-toggle">
-            <i :class="isLoggedIn ? 'fas fa-sign-out-alt' : 'fas fa-sign-in-alt'"></i>
-            {{ isLoggedIn ? " Wyloguj się" : " Zaloguj się" }}
-          </button>
-        </div>
-  
-        <!-- Widok dla niezalogowanych użytkowników -->
-        <div v-if="!isLoggedIn" class="not-logged-in">
-          <h1>Stwórz swoją stronę weselną!</h1>
-          <p>Zaloguj się, aby rozpocząć konfigurację strony weselnej.</p>
-          <router-link to="/login" class="btn btn-primary">Zaloguj się</router-link>
-          <router-link to="/register" class="btn btn-secondary">Zarejestruj się</router-link>
-        </div>
-  
-        <!-- Widok dla zalogowanych użytkowników -->
-        <div v-else>
-          <h1>Konfiguracja strony weselnej</h1>
-          <form @submit.prevent="saveWeddingPage" class="wedding-form">
-            <!-- Tytuł wesela -->
-            <div class="form-group">
-              <label for="title">Tytuł strony:</label>
-              <input
-                id="title"
-                v-model="weddingPage.title"
-                type="text"
-                placeholder="Np. Nasze Wesele"
-                required
-              />
-            </div>
-  
-            <!-- Mapa dojazdu -->
-            <div class="form-group">
-              <label for="map">Link do mapy Google:</label>
-              <input
-                id="map"
-                v-model="weddingPage.googleMapURL"
-                type="url"
-                placeholder="Wklej link do mapy Google"
-                required
-              />
-            </div>
-  
-            <!-- Dane kontaktowe -->
-            <div class="form-group">
-              <label for="phone">Telefon kontaktowy:</label>
-              <input
-                id="phone"
-                v-model="weddingPage.contact.phone"
-                type="text"
-                placeholder="123-456-789"
-                required
-              />
-            </div>
-            <div class="form-group">
-              <label for="email">Adres e-mail:</label>
-              <input
-                id="email"
-                v-model="weddingPage.contact.email"
-                type="email"
-                placeholder="kontakt@example.com"
-                required
-              />
-            </div>
-  
-            <!-- Oczekiwania prezentowe -->
-            <div class="form-group">
-              <label for="gifts">Oczekiwania prezentowe (oddziel przecinkami):</label>
-              <input
-                id="gifts"
-                v-model="giftsInput"
-                type="text"
-                placeholder="Np. Butelka wina, Kupon podarunkowy"
-              />
-            </div>
-  
-            <!-- Dodatkowe informacje -->
-            <div class="form-group">
-              <label for="extraInfo">Dodatkowe informacje:</label>
-              <textarea
-                id="extraInfo"
-                v-model="weddingPage.extraInfo"
-                placeholder="Np. Dress code, godzina przybycia..."
-              ></textarea>
-            </div>
-  
-            <button type="submit" class="btn btn-success">Zapisz stronę</button>
-          </form>
-        </div>
-      </div>
-    </section>
-  </template>
-  
-  <script setup lang="ts">
-  import { ref } from "vue";
-  import { useRouter } from "vue-router";
-  
-  // Router
-  const router = useRouter();
-  
-  // Symulacja logowania
-  const isLoggedIn = ref(false);
-  
-  function toggleLogin() {
-    isLoggedIn.value = !isLoggedIn.value;
-  }
-  
-  // Dane strony weselnej
-  const weddingPage = ref({
-    title: "",
-    googleMapURL: "",
-    contact: {
-      phone: "",
-      email: "",
-    },
-    gifts: [] as string[],
-    extraInfo: "",
-  });
-  
-  const giftsInput = ref(""); // Oczekiwania prezentowe jako string
-  
-  function saveWeddingPage() {
-    // Konwersja prezentów z ciągu tekstowego na tablicę
-    weddingPage.value.gifts = giftsInput.value.split(",").map((gift) => gift.trim());
-  
-    // Przekierowanie na podgląd strony weselnej
-    router.push({ name: "WeddingPage", params: { slug: "moja-strona-weselna" } });
-  }
-  </script>
-  
-  <style scoped>
-  .wedding-landing-page {
-    padding: 20px;
-    background-color: #f9f9f9;
-  }
-  
-  .container {
-    max-width: 800px;
-    margin: 0 auto;
-  }
-  
-  .auth-simulation {
-    margin-bottom: 20px;
-    text-align: right;
-  }
-  
-  .btn-toggle {
-    background-color: #6b1c92;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .btn-toggle:hover {
-    background-color: #5a167e;
-  }
-  
-  .form-group {
-    margin-bottom: 15px;
-  }
-  
-  .form-group label {
-    display: block;
-    font-weight: bold;
-    margin-bottom: 5px;
-  }
-  
-  .form-group input,
-  .form-group textarea {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-  }
-  
-  .btn-success {
-    background-color: #28a745;
-    padding: 10px 20px;
-    border-radius: 5px;
-    color: white;
-    text-align: center;
-    cursor: pointer;
-    border: none;
-  }
-  
-  .btn-success:hover {
-    background-color: #218838;
-  }
-  </style>
-  
+  <form @submit.prevent="singlePost.id ? updatePost(singlePost.id) : createPost()" class="wedding-form">
+    <div class="form-group">
+      <label for="title">Tytuł:</label>
+      <input
+          id="title"
+          v-model="singlePost.title"
+          type="text"
+          required
+          maxlength="255"
+          placeholder="Tytuł wesela"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="description">Opis:</label>
+      <textarea
+          id="description"
+          v-model="singlePost.description"
+          placeholder="Opcjonalny opis wesela"
+      ></textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="wedding_date">Data wesela:</label>
+      <input
+          id="wedding_date"
+          v-model="singlePost.wedding_date"
+          type="date"
+          placeholder="YYYY-MM-DD"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="venue_address">Adres sali:</label>
+      <input
+          id="venue_address"
+          v-model="singlePost.venue_address"
+          type="text"
+          placeholder="Adres wesela"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="latitude">Szerokość geograficzna:</label>
+      <input
+          id="latitude"
+          v-model="singlePost.latitude"
+          type="number"
+          step="0.0000001"
+          placeholder="Np. 50.0646501"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="longitude">Długość geograficzna:</label>
+      <input
+          id="longitude"
+          v-model="singlePost.longitude"
+          type="number"
+          step="0.0000001"
+          placeholder="Np. 19.9449799"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="dress_code">Dress Code:</label>
+      <input
+          id="dress_code"
+          v-model="singlePost.dress_code"
+          type="text"
+          placeholder="Np. Formalny"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="with_children">Czy na przyjęciu będą dzieci?</label>
+      <select id="with_children" v-model="singlePost.with_children" class="form-select">
+        <option value="true">Tak</option>
+        <option value="false">Nie</option>
+      </select>
+    </div>
+
+    <button type="submit" class="btn btn-success">
+      {{ singlePost.id ? "Edytuj" : "Dodaj" }}
+    </button>
+  </form>
+
+  <div v-if="successMessage" class="alert alert-success">{{ successMessage }}</div>
+  <div v-if="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+
+  <section v-if="posts.length">
+    <h2>Twoje posty:</h2>
+    <table class="post-table">
+      <thead>
+      <tr>
+        <th>Tytuł</th>
+        <th>Opis</th>
+        <th>Data wesela</th>
+        <th>Akcje</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr v-for="post in posts" :key="post.id">
+        <td>{{ post.title }}</td>
+        <td>{{ post.description }}</td>
+        <td>{{ post.wedding_date }}</td>
+        <td>
+          <button class="btn btn-success" @click="editPost(post)">Edytuj</button>
+          <button class="btn btn-danger" @click="deletePost(post.id)">Usuń</button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </section>
+</template>
+
+<style scoped>
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.btn-success {
+  background-color: #28a745;
+  padding: 10px 20px;
+  border-radius: 5px;
+  color: white;
+  text-align: center;
+  cursor: pointer;
+  border: none;
+}
+
+.btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.post-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.post-table th,
+.post-table td {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.post-table th {
+  background-color: #f4f4f4;
+  font-weight: bold;
+}
+
+.btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin: 0 5px;
+}
+
+.btn-success {
+  background-color: #28a745;
+  color: white;
+}
+
+.btn-danger {
+  background-color: #dc3545;
+  color: white;
+}
+
+.btn-success:hover {
+  background-color: #218838;
+}
+
+.btn-danger:hover {
+  background-color: #c82333;
+}
+
+.btn-danger {
+  background-color: #dc3545;
+  color: white;
+}
+</style>
