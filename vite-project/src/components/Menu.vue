@@ -10,13 +10,13 @@
       <!-- Nawigacja -->
       <nav class="navbar navbar-expand-lg custom_nav-container flex-grow-1">
         <button
-          class="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarSupportedContent"
-          aria-controls="navbarSupportedContent"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
         >
           <span class="navbar-toggler-icon"></span>
         </button>
@@ -30,12 +30,12 @@
             </li>
             <li class="nav-item dropdown">
               <a
-                class="nav-link dropdown-toggle"
-                href="#"
-                data-bs-toggle="dropdown"
-                role="button"
-                aria-haspopup="true"
-                aria-expanded="false"
+                  class="nav-link dropdown-toggle"
+                  href="#"
+                  data-bs-toggle="dropdown"
+                  role="button"
+                  aria-haspopup="true"
+                  aria-expanded="false"
               >
                 Strona Weselna <span class="caret"></span>
               </a>
@@ -45,30 +45,24 @@
                     Dodaj
                   </router-link>
                 </li>
-                <li>
-                  <router-link class="dropdown-item" to="/wedding-page-view">
-                    Zobacz
-                  </router-link>
-                </li>
               </ul>
             </li>
             <li class="nav-item dropdown">
               <a
-                class="nav-link dropdown-toggle"
-                href="#"
-                data-bs-toggle="dropdown"
-                role="button"
-                aria-haspopup="true"
-                aria-expanded="false"
+                  class="nav-link dropdown-toggle"
+                  href="#"
+                  data-bs-toggle="dropdown"
+                  role="button"
+                  aria-haspopup="true"
+                  aria-expanded="false"
               >
                 Aplikacja <span class="caret"></span>
               </a>
               <ul class="dropdown-menu">
-                <li><router-link class="dropdown-item" to="/o-aplikacji/lista-gosci">Lista gości</router-link></li>
+                <li><router-link class="dropdown-item" to="/goscie">Lista gości</router-link></li>
                 <li><router-link class="dropdown-item" to="/o-aplikacji/planer-stolow">Planer stołów</router-link></li>
                 <li><router-link class="dropdown-item" to="/o-aplikacji/planer-noclegow">Planer noclegów</router-link></li>
                 <li><router-link class="dropdown-item" to="/o-aplikacji/organizer-zadan">Organizer zadań</router-link></li>
-                <li><router-link class="dropdown-item" to="/o-aplikacji/statystyki">Statystyki</router-link></li>
               </ul>
             </li>
             <li class="nav-item">
@@ -81,15 +75,17 @@
         </div>
       </nav>
 
-      <!-- Zaloguj z rozwijanym menu -->
+      <!-- Zaloguj/Wyloguj z rozwijanym menu -->
       <div class="dropdown custom-login-wrapper">
         <a href="#" class="custom-login-link dropdown-toggle" id="loginDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-          <i class="fas fa-user"></i> Zaloguj
+          <i class="fas fa-user"></i>
+          <span v-if="isLoggedIn">Wyloguj</span>
+          <span v-else>Zaloguj</span>
         </a>
         <ul class="dropdown-menu" aria-labelledby="loginDropdown">
-          <li><a class="dropdown-item" href="/login"><i class="fas fa-envelope me-2"></i>Zaloguj przez Email</a></li>
-          <li><a class="dropdown-item" href="http://localhost/api/auth/google/"><i class="fab fa-google me-2"></i>Zaloguj przez Google</a></li>
-          <li><a class="dropdown-item" href="http://localhost/api/auth/facebook/"><i class="fab fa-facebook-f me-2"></i>Zaloguj przez Facebook</a></li>
+          <li v-if="!isLoggedIn"><router-link class="dropdown-item" to="/logowanie"><i class="fas fa-envelope me-2"></i>Zaloguj</router-link></li>
+          <li v-if="!isLoggedIn"><a class="dropdown-item" href="/logowanie/google"><i class="fab fa-google me-2"></i>Zaloguj przez Sociale</a></li>
+          <li v-if="isLoggedIn"><a class="dropdown-item" @click.prevent="logout"><i class="fas fa-sign-out-alt me-2"></i>Wyloguj</a></li>
         </ul>
       </div>
     </div>
@@ -97,41 +93,29 @@
 </template>
 
 <script lang="ts">
-import { useRoute } from "vue-router";
+import { ref } from "vue";
+import { useRouter } from "vue-router";
 
 export default {
   name: "Header",
   setup() {
-    const route = useRoute();
+    const router = useRouter();
 
-    const isActive = (path: string) => route.path === path;
+    const isLoggedIn = ref(localStorage.getItem("auth_token") !== null);
+
+    const logout = () => {
+      localStorage.removeItem("auth_token");
+      isLoggedIn.value = false;
+      router.push("/");
+    };
+
+    const isActive = (path: string) => router.currentRoute.value.path === path;
 
     return {
+      isLoggedIn,
       isActive,
+      logout
     };
-  },
+  }
 };
 </script>
-
-<style scoped>
-.nav-item .active {
-  font-weight: bold;
-  color: #6b1c92;
-}
-
-.dropdown-menu {
-  background-color: #fff;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-}
-
-.dropdown-menu .dropdown-item {
-  padding: 10px 20px;
-  color: #333;
-  text-decoration: none;
-}
-
-.dropdown-menu .dropdown-item:hover {
-  background-color: #f1f1f1;
-}
-</style>

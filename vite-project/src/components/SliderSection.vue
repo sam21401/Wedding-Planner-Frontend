@@ -9,8 +9,8 @@
           <div class="col-md-6 align-self-start" style="margin: 20% 0;">
             <div class="hero-text">
               <h1>Twój niezawodny pomocnik w planowaniu idealnego wesela</h1>
-              <p>Zaplanuj własne wesele od A do Z!</p>
-              <a href="/register" class="btn btn-primary">Załóż konto</a>
+              <p>Zaplanuj własne wesele od A do Z!2</p>
+              <a href="/rejestracja" class="btn btn-primary">Załóż konto</a>
             </div>
           </div>
   
