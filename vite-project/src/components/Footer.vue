@@ -70,7 +70,7 @@
               <p>Masz pytania? Skontaktuj się z nami natychmiast!</p>
             </div>
             <div class="contact_online">
-              <router-link to="/kontakt-online" class="btn-online">
+              <router-link to="/kontakt" class="btn-online">
                 <i class="fas fa-envelope me-2"></i> Formularz kontaktowy
               </router-link>
               <a href="#" class="btn-chat">
