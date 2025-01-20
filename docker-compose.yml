@@ -9,8 +9,13 @@ services:
       - .:/app
     networks: 
       - traefik-network
-    working_dir: "/app"
+    working_dir: "/app/vite-project"
     tty: true
+    ports:
+      - "5173:5173" 
+    environment:
+      - NODE_ENV=development
+    command: ["sh", "-c", "npm install && npm run dev"]
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.frontend-router.rule=Host(`weddingplanner.localhost`)"

@@ -3,7 +3,7 @@ install:
 	docker compose exec -t node npm install
 
 run:
-	docker compose exec -t node npm run dev
+	docker-compose up -d
 
 shell:
 	docker compose exec -it node sh
