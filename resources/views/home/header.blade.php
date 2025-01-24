@@ -24,6 +24,7 @@
                             O aplikacji <span class="caret"></span>
                         </a>
                         <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{{ url('o-aplikacji/współorganizatorzy') }}">Współorganizatorzy</a></li>
                             <li><a class="dropdown-item" href="{{ url('o-aplikacji/lista-gosci') }}">Lista gości</a></li>
                             <li><a class="dropdown-item" href="{{ url('o-aplikacji/planer-stolow') }}">Planer stołów</a></li>
                             <li><a class="dropdown-item" href="{{ url('o-aplikacji/planer-noclegow') }}">Planer noclegów</a></li>
